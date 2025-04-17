@@ -9,7 +9,8 @@ type Post = {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch('http://localhost:3000/api/blog-posts')
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+  const res = await fetch(`${baseUrl}/api/blog-posts`)
   const data = await res.json()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,9 +25,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL
   const slug = params?.slug
   const res = await fetch(
-    `http://localhost:3000/api/blog-posts?where[slug][equals]=${slug}`
+    `${baseUrl}/api/blog-posts?where[slug][equals]=${slug}`
   )
   const data = await res.json()
 
