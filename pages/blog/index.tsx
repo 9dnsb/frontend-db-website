@@ -1,7 +1,8 @@
 import Link from 'next/link'
 
 export async function getStaticProps() {
-  const res = await fetch('http://localhost:3000/api/blog-posts')
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+  const res = await fetch(`${baseUrl}/api/blog-posts`)
   const data = await res.json()
 
   return {
