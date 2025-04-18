@@ -1,19 +1,20 @@
+// src/app/blog/page.tsx
 import Link from 'next/link'
 
-export async function getStaticProps() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-  const res = await fetch(`${baseUrl}/api/blog-posts`)
-  const data = await res.json()
-
-  return {
-    props: {
-      posts: data.docs,
-    },
-  }
+type Post = {
+  id: string
+  title: string
+  slug: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function BlogIndex({ posts }: { posts: any[] }) {
+export default async function BlogIndexPage() {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL
+  const res = await fetch(`${baseUrl}/api/blog-posts`, {
+    next: { revalidate: 60 },
+  })
+  const data = await res.json()
+  const posts: Post[] = data.docs
+
   return (
     <main>
       <h1>Blog Posts</h1>
