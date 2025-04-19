@@ -13,7 +13,7 @@ export default async function BlogIndexPage() {
   let posts: Post[] = []
 
   try {
-    const res = await fetch(`${baseUrl}/api/BROKEN-endpoint`, {
+    const res = await fetch(`${baseUrl}/api/blog-posts`, {
       next: { revalidate: 60 },
     })
 
