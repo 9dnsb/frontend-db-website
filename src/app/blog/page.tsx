@@ -9,11 +9,27 @@ type Post = {
 
 export default async function BlogIndexPage() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL
-  const res = await fetch(`${baseUrl}/api/blog-posts`, {
-    next: { revalidate: 60 },
-  })
-  const data = await res.json()
-  const posts: Post[] = data.docs
+
+  let posts: Post[] = []
+
+  try {
+    const res = await fetch(`${baseUrl}/api/blog-posts`, {
+      next: { revalidate: 60 },
+    })
+
+    if (!res.ok) {
+      console.error(
+        `❌ Failed to fetch blog index: ${res.status} ${res.statusText}`
+      )
+      return null // or render fallback UI if you want
+    }
+
+    const data = await res.json()
+    posts = data.docs
+  } catch (err) {
+    console.error('❌ Blog index fetch threw an error:', err)
+    return null
+  }
 
   return (
     <main>

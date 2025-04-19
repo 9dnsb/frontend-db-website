@@ -34,12 +34,18 @@ export default async function BlogPostPage({
     }
   )
 
-  if (!res.ok) return notFound()
+  if (!res.ok) {
+    console.error(`❌ Failed to fetch blog post: ${res.status} for slug=${slug}`)
+    return notFound()
+  }
 
   const data = await res.json()
   const post: Post | undefined = data.docs?.[0]
 
-  if (!post) return notFound()
+  if (!post) {
+    console.warn(`⚠️ No post found for slug=${slug}`)
+    return notFound()
+  }
 
   return (
     <article style={{ maxWidth: '600px', margin: 'auto', padding: '2rem' }}>
