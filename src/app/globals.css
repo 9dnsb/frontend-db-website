@@ -1,26 +1,34 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
+/* Light Theme Defaults */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark theme override via class */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
+/* Base element styles */
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, rgba(0, 0, 0, 0.04), transparent 60%),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.75;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
 }
