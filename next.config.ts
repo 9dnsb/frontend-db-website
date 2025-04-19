@@ -1,26 +1,6 @@
 import type { NextConfig } from 'next'
 
-const isDev = process.env.NODE_ENV === 'development'
-
-const ContentSecurityPolicy = `
-  default-src 'self';
-  script-src 'self';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data:;
-  font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self';
-  frame-ancestors 'none';
-`
-  .replace(/\s{2,}/g, ' ')
-  .trim()
-
 const securityHeaders = [
-  {
-    key: isDev
-      ? 'Content-Security-Policy-Report-Only'
-      : 'Content-Security-Policy',
-    value: ContentSecurityPolicy,
-  },
   {
     key: 'X-Frame-Options',
     value: 'SAMEORIGIN',
