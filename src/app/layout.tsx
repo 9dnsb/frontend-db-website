@@ -22,8 +22,15 @@ export const metadata: Metadata = {
     description: 'Learn how AI might fit into your own life',
     url: 'https://davidblatt.ca',
     siteName: "David Blatt's Website",
-
-    locale: 'en_US',
+    images: [
+      {
+        url: 'https://davidblatt.ca/og.png',
+        width: 1200,
+        height: 630,
+        alt: "David Blatt's Website",
+      },
+    ],
+    locale: 'en_CA',
     type: 'website',
   },
 }
