@@ -31,6 +31,9 @@ export default async function HomePage() {
         <h1 className="text-4xl font-bold mb-4">Hey, I’m David Blatt.</h1>
         <p className="text-lg text-[var(--foreground)]/80">
           I write articles about how I&apos;m using ChatGPT in my everyday life
+          — to solve problems, learn new things, and build projects. I hope you
+          leave with something helpful: a tip, a new idea, or even just
+          curiosity about how AI might fit into your own life.
         </p>
       </section>
 
