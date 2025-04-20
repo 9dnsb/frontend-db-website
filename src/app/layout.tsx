@@ -2,6 +2,7 @@
 import Navbar from './components/Navbar'
 import './globals.css'
 import { Geist, Geist_Mono } from 'next/font/google'
+import type { Metadata } from 'next'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -13,11 +14,19 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 })
 
-export const metadata = {
-  title: 'David Blatt',
-  description: 'Personal blog by David Blatt',
-}
+export const metadata: Metadata = {
+  title: "David Blatt's Website",
+  description: 'Learn how AI might fit into your own life',
+  openGraph: {
+    title: "David Blatt's Website",
+    description: 'Learn how AI might fit into your own life',
+    url: 'https://davidblatt.ca',
+    siteName: "David Blatt's Website",
 
+    locale: 'en_US',
+    type: 'website',
+  },
+}
 export default function RootLayout({
   children,
 }: {
