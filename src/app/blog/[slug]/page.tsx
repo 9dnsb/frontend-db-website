@@ -74,7 +74,7 @@ export default async function BlogPostPage({
   const authorName = post.author?.name || 'David Blatt'
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-12">
+    <main className="max-w-3xl mx-auto px-6 py-2">
       <h1 className="text-3xl font-bold mb-2 leading-tight">{post.title}</h1>
 
       <p className="text-sm text-[var(--foreground)]/60 mb-8">
