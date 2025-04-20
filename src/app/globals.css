@@ -6,12 +6,14 @@
   --foreground: #171717;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --card-background: #ffffff;
 }
 
 /* Dark theme override via class */
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
+  --card-background: #111111;
 }
 
 /* Base element styles */

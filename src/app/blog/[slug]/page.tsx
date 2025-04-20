@@ -3,17 +3,26 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
 type Post = {
+  id: string
   title: string
   slug: string
   content: SerializedEditorState
+  publishedDate: string
+  author?: {
+    name: string
+  }
+}
+
+type APIResponse = {
+  docs: Post[]
 }
 
 export async function generateStaticParams() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL
   const res = await fetch(`${baseUrl}/api/blog-posts`)
-  const data = await res.json()
+  const data: APIResponse = await res.json()
 
-  return data.docs.map((post: { slug: string }) => ({
+  return data.docs.map((post) => ({
     slug: post.slug,
   }))
 }
@@ -41,7 +50,7 @@ export default async function BlogPostPage({
       return notFound()
     }
 
-    const data = await res.json()
+    const data: APIResponse = await res.json()
     post = data.docs?.[0]
 
     if (!post) {
@@ -53,10 +62,28 @@ export default async function BlogPostPage({
     return notFound()
   }
 
+  const formattedDate = new Date(post.publishedDate).toLocaleDateString(
+    undefined,
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }
+  )
+
+  const authorName = post.author?.name || 'David Blatt'
+
   return (
-    <article style={{ maxWidth: '600px', margin: 'auto', padding: '2rem' }}>
-      <h1>{post.title}</h1>
-      <RichText data={post.content} />
-    </article>
+    <main className="max-w-3xl mx-auto px-6 py-12">
+      <h1 className="text-3xl font-bold mb-2 leading-tight">{post.title}</h1>
+
+      <p className="text-sm text-[var(--foreground)]/60 mb-8">
+        {formattedDate} · by {authorName}
+      </p>
+
+      <div className="prose prose-lg prose-neutral dark:prose-invert max-w-none">
+        <RichText data={post.content} />
+      </div>
+    </main>
   )
 }
