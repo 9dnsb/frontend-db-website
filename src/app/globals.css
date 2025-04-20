@@ -1,34 +1,58 @@
+/* Tailwind base styles + plugin */
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
-/* Light Theme Defaults */
+/* =============================
+   🌗 Dark mode support for prose
+   ============================= */
+@layer utilities {
+  .dark .prose {
+    @apply prose-invert;
+  }
+}
+
+/* =============================
+   🎨 Base theme variables
+   ============================= */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --card-background: #ffffff;
+
+  --font-sans: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(
+    --font-geist-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace
+  );
 }
 
-/* Dark theme override via class */
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
   --card-background: #111111;
 }
 
-/* Base element styles */
+/* =============================
+   📜 Base document styles
+   ============================= */
 body {
   background:
     radial-gradient(circle at top left, rgba(0, 0, 0, 0.04), transparent 60%),
     var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.75;
 }
 
+/* =============================
+   🔗 Basic element overrides
+   ============================= */
 a {
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
 }
 
 * {

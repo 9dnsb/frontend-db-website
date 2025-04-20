@@ -19,7 +19,7 @@ export default async function AboutPage() {
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
-      <div className="prose prose-lg prose-neutral dark:prose-invert max-w-none">
+      <div className="prose">
         <RichText data={data.content} />
       </div>
     </main>

@@ -81,7 +81,7 @@ export default async function BlogPostPage({
         {formattedDate} · by {authorName}
       </p>
 
-      <div className="prose prose-lg prose-neutral dark:prose-invert max-w-none">
+      <div className="prose prose-lg ">
         <RichText data={post.content} />
       </div>
     </main>
