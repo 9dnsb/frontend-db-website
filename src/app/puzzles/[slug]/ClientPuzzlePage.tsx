@@ -120,7 +120,7 @@ export default function ClientPuzzlePage({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.2 }}
-                className={`border rounded-lg p-3 text-center font-medium transition ${
+                className={`text-sm text-center break-words px-2 py-2 min-h-[3.5rem] border rounded-lg font-medium transition w-full ${
                   isSelected
                     ? 'bg-blue-600 text-white'
                     : 'bg-muted hover:bg-muted/50'
