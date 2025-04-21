@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { PostCard } from '../components/PostCard'
+import { fetchData } from '@/lib/fetchData'
 
 type Post = {
   id: string
@@ -9,26 +10,15 @@ type Post = {
 }
 
 export default async function BlogIndexPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-
   let posts: Post[] = []
 
   try {
-    const res = await fetch(`${baseUrl}/api/blog-posts?sort=-publishedDate`, {
-      next: { revalidate: 60 },
-    })
-
-    if (!res.ok) {
-      console.error(
-        `❌ Failed to fetch blog index: ${res.status} ${res.statusText}`
-      )
-      return null
-    }
-
-    const data = await res.json()
+    const data = await fetchData<{ docs: Post[] }>(
+      '/api/blog-posts?sort=-publishedDate'
+    )
     posts = data.docs
   } catch (err) {
-    console.error('❌ Blog index fetch threw an error:', err)
+    console.error('❌ Failed to fetch blog index:', err)
     return null
   }
 
@@ -40,16 +30,12 @@ export default async function BlogIndexPage() {
         <ul className="space-y-6">
           {posts.map((post) => (
             <li key={post.id}>
-              <Link href={`/blog/${post.slug}`} className="block group">
-                <article className="bg-[var(--card-background)] p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                  <h3 className="text-lg font-medium group-hover:underline">
-                    {post.title}
-                  </h3>
-                  <p className="text-[var(--foreground)]/70 text-sm mt-1">
-                    {post.excerpt}
-                  </p>
-                </article>
-              </Link>
+              <PostCard
+                slug={post.slug}
+                title={post.title}
+                excerpt={post.excerpt}
+                publishedDate={post.publishedDate}
+              />
             </li>
           ))}
         </ul>

@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
-import { RichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { RichContent } from '@/app/components/RichContent'
+import { formatDate } from '@/lib/formatDate'
+import { PageContainer } from '@/app/components/PageContainer'
+import { fetchData } from '@/lib/fetchData'
 
 type Post = {
   id: string
@@ -18,10 +21,7 @@ type APIResponse = {
 }
 
 export async function generateStaticParams() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-  const res = await fetch(`${baseUrl}/api/blog-posts`)
-  const data: APIResponse = await res.json()
-
+  const data = await fetchData<APIResponse>('/api/blog-posts')
   return data.docs.map((post) => ({
     slug: post.slug,
   }))
@@ -34,56 +34,30 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-  let post: Post | undefined = undefined
-
   try {
-    const res = await fetch(
-      `${baseUrl}/api/blog-posts?where[slug][equals]=${slug}`,
-      {
-        next: { revalidate: 60 },
-      }
+    const data = await fetchData<APIResponse>(
+      `/api/blog-posts?where[slug][equals]=${slug}`
     )
 
-    if (!res.ok) {
-      console.error(`❌ Blog fetch failed: ${res.status} for slug=${slug}`)
-      return notFound()
-    }
-
-    const data: APIResponse = await res.json()
-    post = data.docs?.[0]
-
+    const post = data.docs?.[0]
     if (!post) {
       console.warn(`⚠️ Blog post not found for slug=${slug}`)
       return notFound()
     }
+
+    const authorName = post.author?.name || 'David Blatt'
+
+    return (
+      <PageContainer>
+        <h1 className="text-3xl font-bold mb-2 leading-tight">{post.title}</h1>
+        <p className="text-sm text-[var(--foreground)]/60 mb-8">
+          {formatDate(post.publishedDate)} · by {authorName}
+        </p>
+        <RichContent content={post.content} />
+      </PageContainer>
+    )
   } catch (err) {
-    console.error(`❌ Exception thrown fetching blog slug=${slug}:`, err)
+    console.error(`❌ Exception fetching blog slug=${slug}:`, err)
     return notFound()
   }
-
-  const formattedDate = new Date(post.publishedDate).toLocaleDateString(
-    undefined,
-    {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }
-  )
-
-  const authorName = post.author?.name || 'David Blatt'
-
-  return (
-    <main className="max-w-3xl mx-auto px-6 py-2">
-      <h1 className="text-3xl font-bold mb-2 leading-tight">{post.title}</h1>
-
-      <p className="text-sm text-[var(--foreground)]/60 mb-8">
-        {formattedDate} · by {authorName}
-      </p>
-
-      <div className="prose prose-lg ">
-        <RichText data={post.content} />
-      </div>
-    </main>
-  )
 }

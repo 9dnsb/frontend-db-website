@@ -8,17 +8,35 @@ type Word = {
   difficulty: 'easy' | 'medium' | 'hard' | 'tricky'
 }
 
+type Labels = {
+  easy: string
+  medium: string
+  hard: string
+  tricky: string
+}
+function shuffle<T>(array: T[]): T[] {
+  const copy = [...array]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
+
 export default function ClientPuzzlePage({
   words,
   date,
+  labels,
 }: {
   words: Word[]
   date: string
+  labels: Labels
 }) {
   const [remaining, setRemaining] = useState<Word[]>(words)
   const [selected, setSelected] = useState<string[]>([])
   const [message, setMessage] = useState<string | null>(null)
   const [shake, setShake] = useState(false)
+  const [solvedGroups, setSolvedGroups] = useState<string[]>([])
 
   function toggleWord(word: string) {
     setSelected((prev) =>
@@ -43,7 +61,9 @@ export default function ClientPuzzlePage({
     if (allMatch) {
       setRemaining((prev) => prev.filter((w) => !selected.includes(w.word)))
       setSelected([])
-      setMessage(`✅ Correct group: ${group.toUpperCase()}`)
+      const label = labels[group]
+      setMessage(`✅ Correct group: ${label}`)
+      setSolvedGroups((prev) => [...prev, label])
       setShake(false)
     } else {
       setMessage('❌ Try again.')
@@ -52,9 +72,24 @@ export default function ClientPuzzlePage({
     }
   }
 
+  function getColorForGroup(label: string): string {
+    switch (label) {
+      case labels.easy:
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case labels.medium:
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case labels.hard:
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      case labels.tricky:
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white'
+    }
+  }
+
   return (
     <main className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold">Connections Puzzle</h1>
+      <h1 className="text-2xl font-bold">Mix & Match Puzzle</h1>
       <p className="text-muted-foreground mb-4">
         Published:{' '}
         {new Date(date).toLocaleDateString('en-US', {
@@ -102,15 +137,27 @@ export default function ClientPuzzlePage({
         Selected: {selected.join(', ') || 'None'}
       </p>
 
-      <button
-        onClick={checkGroup}
-        className="mt-4 px-4 py-2 rounded font-semibold transition
+      <div className="mt-4 flex gap-2">
+        <button
+          onClick={checkGroup}
+          className="px-4 py-2 rounded font-semibold transition
              bg-gray-900 text-white hover:bg-gray-700
              dark:bg-white dark:text-black dark:hover:bg-gray-200
              border border-gray-300 dark:border-gray-700"
-      >
-        Check Group
-      </button>
+        >
+          Check Group
+        </button>
+
+        <button
+          onClick={() => setRemaining(shuffle([...remaining]))}
+          className="px-4 py-2 rounded font-semibold transition
+             bg-gray-100 text-gray-800 hover:bg-gray-200
+             dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700
+             border border-gray-300 dark:border-gray-700"
+        >
+          Shuffle
+        </button>
+      </div>
 
       {message && (
         <motion.p
@@ -122,6 +169,26 @@ export default function ClientPuzzlePage({
         >
           {message}
         </motion.p>
+      )}
+
+      {solvedGroups.length > 0 && (
+        <div className="mt-6 space-y-2">
+          <h2 className="text-sm font-semibold text-muted-foreground">
+            Solved Groups:
+          </h2>
+          <ul className="flex flex-wrap gap-2">
+            {solvedGroups.map((label) => (
+              <li
+                key={label}
+                className={`px-2 py-1 text-xs font-medium rounded ${getColorForGroup(
+                  label
+                )}`}
+              >
+                ✅ {label}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {remaining.length === 0 && (

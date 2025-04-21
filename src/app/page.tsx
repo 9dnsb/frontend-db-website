@@ -1,5 +1,6 @@
 // src/app/page.tsx
-import Link from 'next/link'
+import { PostCard } from './components/PostCard'
+import { fetchData } from '@/lib/fetchData'
 
 type Post = {
   id: string
@@ -9,20 +10,18 @@ type Post = {
   publishedDate: string
 }
 
-async function getPosts(): Promise<Post[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-  const res = await fetch(
-    `${baseUrl}/api/blog-posts?limit=4&sort=-publishedDate`,
-    {
-      next: { revalidate: 60 },
-    }
-  )
-  const data = await res.json()
-  return data.docs
-}
-
 export default async function HomePage() {
-  const posts = await getPosts()
+  let posts: Post[] = []
+
+  try {
+    const data = await fetchData<{ docs: Post[] }>(
+      '/api/blog-posts?limit=4&sort=-publishedDate'
+    )
+    posts = data.docs
+  } catch (err) {
+    console.error('❌ Failed to fetch home page posts:', err)
+    return null
+  }
 
   return (
     <div className="space-y-16">
@@ -44,16 +43,12 @@ export default async function HomePage() {
           <ul className="space-y-6">
             {posts.map((post) => (
               <li key={post.id}>
-                <Link href={`/blog/${post.slug}`} className="block group">
-                  <article className="bg-[var(--card-background)] p-4 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-medium group-hover:underline">
-                      {post.title}
-                    </h3>
-                    <p className="text-[var(--foreground)]/70 text-sm mt-1">
-                      {post.excerpt}
-                    </p>
-                  </article>
-                </Link>
+                <PostCard
+                  slug={post.slug}
+                  title={post.title}
+                  excerpt={post.excerpt}
+                  publishedDate={post.publishedDate}
+                />
               </li>
             ))}
           </ul>

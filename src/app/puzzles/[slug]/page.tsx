@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import ClientPuzzlePage from './ClientPuzzlePage'
+import { fetchData } from '@/lib/fetchData'
 
 type Word = {
   word: string
@@ -9,10 +10,22 @@ type Word = {
 type Puzzle = {
   slug: string
   publishedDate: string
-  easyGroup: { word: string }[]
-  mediumGroup: { word: string }[]
-  hardGroup: { word: string }[]
-  trickyGroup: { word: string }[]
+  easyGroup: {
+    label: string
+    words: { word: string }[]
+  }
+  mediumGroup: {
+    label: string
+    words: { word: string }[]
+  }
+  hardGroup: {
+    label: string
+    words: { word: string }[]
+  }
+  trickyGroup: {
+    label: string
+    words: { word: string }[]
+  }
 }
 
 type APIResponse = {
@@ -20,10 +33,7 @@ type APIResponse = {
 }
 
 export async function generateStaticParams() {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-  const res = await fetch(`${baseUrl}/api/puzzles`)
-  const data: APIResponse = await res.json()
-
+  const data = await fetchData<APIResponse>('/api/puzzles')
   return data.docs.map((puzzle) => ({
     slug: puzzle.slug,
   }))
@@ -35,46 +45,55 @@ export default async function PuzzlePage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL
-
-  let puzzle: Puzzle | undefined = undefined
 
   try {
-    const res = await fetch(
-      `${baseUrl}/api/puzzles?where[slug][equals]=${slug}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-        next: { revalidate: 60 },
-      }
+    const data = await fetchData<APIResponse>(
+      `/api/puzzles?where[slug][equals]=${slug}`
     )
-
-    if (!res.ok) {
-      console.error(`❌ Puzzle fetch failed: ${res.status} for slug=${slug}`)
-      return notFound()
-    }
-
-    const data: APIResponse = await res.json()
-    puzzle = data.docs?.[0]
+    const puzzle = data.docs?.[0]
 
     if (!puzzle) {
       console.warn(`⚠️ Puzzle not found for slug=${slug}`)
       return notFound()
     }
+
+    const words: Word[] = shuffle([
+      ...puzzle.easyGroup.words.map((w) => ({
+        ...w,
+        difficulty: 'easy' as const,
+      })),
+      ...puzzle.mediumGroup.words.map((w) => ({
+        ...w,
+        difficulty: 'medium' as const,
+      })),
+      ...puzzle.hardGroup.words.map((w) => ({
+        ...w,
+        difficulty: 'hard' as const,
+      })),
+      ...puzzle.trickyGroup.words.map((w) => ({
+        ...w,
+        difficulty: 'tricky' as const,
+      })),
+    ])
+
+    const labels = {
+      easy: puzzle.easyGroup.label,
+      medium: puzzle.mediumGroup.label,
+      hard: puzzle.hardGroup.label,
+      tricky: puzzle.trickyGroup.label,
+    }
+
+    return (
+      <ClientPuzzlePage
+        words={words}
+        date={puzzle.publishedDate}
+        labels={labels}
+      />
+    )
   } catch (err) {
     console.error(`❌ Exception fetching puzzle slug=${slug}:`, err)
     return notFound()
   }
-
-  const words: Word[] = shuffle([
-    ...puzzle.easyGroup.map((w) => ({ ...w, difficulty: 'easy' as const })),
-    ...puzzle.mediumGroup.map((w) => ({ ...w, difficulty: 'medium' as const })),
-    ...puzzle.hardGroup.map((w) => ({ ...w, difficulty: 'hard' as const })),
-    ...puzzle.trickyGroup.map((w) => ({ ...w, difficulty: 'tricky' as const })),
-  ])
-
-  return <ClientPuzzlePage words={words} date={puzzle.publishedDate} />
 }
 
 function shuffle<T>(array: T[]): T[] {
