@@ -20,9 +20,13 @@ export default function Navbar() {
           <Link href="/blog" className="hover:underline">
             Blog
           </Link>
+          <Link href="/puzzles" className="hover:underline">
+            Puzzles
+          </Link>
           <Link href="/about" className="hover:underline">
             About
           </Link>
+
           <ThemeToggleButton />
         </nav>
 
@@ -56,12 +60,20 @@ export default function Navbar() {
                 Blog
               </Link>
               <Link
+                href="/puzzles"
+                className="hover:underline"
+                onClick={() => setMenuOpen(false)}
+              >
+                Puzzles
+              </Link>
+              <Link
                 href="/about"
                 className="hover:underline"
                 onClick={() => setMenuOpen(false)}
               >
                 About
               </Link>
+
               <ThemeToggleButton />
             </div>
           </motion.nav>
