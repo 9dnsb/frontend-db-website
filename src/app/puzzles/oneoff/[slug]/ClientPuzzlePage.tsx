@@ -54,7 +54,7 @@ export default function ClientPuzzlePage({
         </span>
       </h2>
 
-      <div className="flex gap-4 items-center mt-4">
+      <div className="flex flex-wrap gap-4 items-center mt-4">
         <div className="flex flex-1 gap-2">
           <input
             type="text"
