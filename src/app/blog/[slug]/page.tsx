@@ -4,6 +4,7 @@ import { RichContent } from '@/app/components/RichContent'
 import { formatDate } from '@/lib/formatDate'
 import { PageContainer } from '@/app/components/PageContainer'
 import { fetchData } from '@/lib/fetchData'
+import { generateBlogPostMetadata } from '@/lib/metadata/blogPostMetadata'
 
 type Post = {
   id: string
@@ -25,6 +26,15 @@ export async function generateStaticParams() {
   return data.docs.map((post) => ({
     slug: post.slug,
   }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  return generateBlogPostMetadata(slug)
 }
 
 export default async function BlogPostPage({
