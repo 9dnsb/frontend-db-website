@@ -85,9 +85,10 @@ export default function ClientPuzzlePage({
           <h2 className="text-sm font-medium mb-1">✅ Found:</h2>
           <ul className="list-disc list-inside">
             {correct.map((w) => (
-              <li key={w}>{w}</li>
+              <li key={w}>{w.charAt(0).toUpperCase() + w.slice(1)}</li>
             ))}
           </ul>
+
           {correct.length === validAnswers.length && (
             <p className="mt-6 text-center text-green-600 font-bold text-lg">
               🎉 Puzzle solved! You found all {validAnswers.length} words.
