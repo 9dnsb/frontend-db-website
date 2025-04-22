@@ -27,7 +27,7 @@ export default function ClientPuzzlePage({
   }
 
   return (
-    <main className="max-w-xl mx-auto p-6">
+    <main className="container mx-auto py-6">
       <h1 className="text-2xl font-bold mb-2">One Off Puzzle</h1>
 
       <div className="text-sm text-muted-foreground mb-4 space-y-1">
@@ -54,23 +54,26 @@ export default function ClientPuzzlePage({
         </span>
       </h2>
 
-      <div className="flex items-center gap-4 mt-4">
-        <input
-          type="text"
-          value={guess}
-          onChange={(e) => setGuess(e.target.value)}
-          placeholder="Enter a one-off word"
-          className="flex-1 px-3 py-2 border rounded"
-          //       👆 adds horizontal padding
-        />
+      <div className="flex gap-4 items-center mt-4">
+        <div className="flex flex-1 gap-2">
+          <input
+            type="text"
+            value={guess}
+            onChange={(e) => setGuess(e.target.value)}
+            placeholder="Enter a one-off word"
+            className="flex-1 px-3 py-2 border rounded"
+          />
+          <div className="shrink-0">
+            <button
+              onClick={checkGuess}
+              className="px-4 py-2 rounded bg-blue-600 text-white font-medium"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
 
-        <button
-          onClick={checkGuess}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Submit
-        </button>
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground whitespace-nowrap">
           ✅ Found: {correct.length} / {validAnswers.length}
         </p>
       </div>
