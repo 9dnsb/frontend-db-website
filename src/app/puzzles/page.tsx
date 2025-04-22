@@ -1,41 +1,38 @@
-import { PuzzleCard } from '../components/PuzzleCard'
-import { fetchData } from '@/lib/fetchData'
+'use client'
 
-type Puzzle = {
-  id: string
-  slug: string
-  publishedDate: string
-}
+import Link from 'next/link'
 
-export default async function PuzzleListPage() {
-  let puzzles: Puzzle[] = []
+const games = [
+  {
+    slug: 'mixandmatch',
+    name: 'Mix & Match',
+    description:
+      'Group 16 words into 4 hidden categories. Can you find the sets?',
+  },
+  {
+    slug: 'oneoff',
+    name: 'One Off',
+    description: 'Change, add, or remove one letter to find all related words.',
+  },
+]
 
-  try {
-    const data = await fetchData<{ docs: Puzzle[] }>('/api/puzzles')
-    puzzles = data.docs
-  } catch (err) {
-    console.error('❌ Failed to fetch puzzles:', err)
-    return null
-  }
-
+export default function PuzzleHubPage() {
   return (
-    <main className="max-w-xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">All Puzzles</h1>
-
-      {puzzles.length === 0 ? (
-        <p>No puzzles found.</p>
-      ) : (
-        <ul className="space-y-3">
-          {puzzles.map((puzzle) => (
-            <li key={puzzle.id}>
-              <PuzzleCard
-                slug={puzzle.slug}
-                publishedDate={puzzle.publishedDate}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+    <main className="max-w-2xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Choose a Puzzle</h1>
+      <ul className="space-y-4">
+        {games.map(({ slug, name, description }) => (
+          <li key={slug}>
+            <Link
+              href={`/puzzles/${slug}`}
+              className="block rounded-lg p-6 border hover:shadow transition bg-muted/5"
+            >
+              <h2 className="text-xl font-semibold mb-1">{name}</h2>
+              <p className="text-sm text-muted-foreground">{description}</p>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </main>
   )
 }

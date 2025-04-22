@@ -2,18 +2,9 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Labels, Word } from './loader'
+import { formatDate } from '@/lib/formatDate'
 
-type Word = {
-  word: string
-  difficulty: 'easy' | 'medium' | 'hard' | 'tricky'
-}
-
-type Labels = {
-  easy: string
-  medium: string
-  hard: string
-  tricky: string
-}
 function shuffle<T>(array: T[]): T[] {
   const copy = [...array]
   for (let i = copy.length - 1; i > 0; i--) {
@@ -91,12 +82,7 @@ export default function ClientPuzzlePage({
     <main className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold">Mix & Match Puzzle</h1>
       <p className="text-muted-foreground mb-4">
-        Published:{' '}
-        {new Date(date).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
+        Published: {formatDate(date)}
       </p>
 
       <motion.div
