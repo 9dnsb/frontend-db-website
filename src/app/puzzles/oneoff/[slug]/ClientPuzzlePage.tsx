@@ -29,6 +29,20 @@ export default function ClientPuzzlePage({
   return (
     <main className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-2">One Off Puzzle</h1>
+
+      <div className="text-sm text-muted-foreground mb-4 space-y-1">
+        <p>
+          🧠 Find all real English words that are one letter away from the
+          starting word.
+        </p>
+        <ul className="list-disc list-inside ml-4">
+          <li>Change one letter</li>
+          <li>Add one letter</li>
+          <li>Remove one letter</li>
+        </ul>
+        <p>No letter reordering. All answers must be real words.</p>
+      </div>
+
       <p className="text-muted-foreground mb-2">
         Published: {formatDate(date)}
       </p>
