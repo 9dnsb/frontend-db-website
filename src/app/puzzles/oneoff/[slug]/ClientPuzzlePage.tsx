@@ -1,5 +1,6 @@
 'use client'
 
+import { capitalize } from '@/lib/capitalize'
 import { formatDate } from '@/lib/formatDate'
 import { useState } from 'react'
 
@@ -50,7 +51,7 @@ export default function ClientPuzzlePage({
       <h2 className="text-xl font-semibold text-blue-700 dark:text-blue-400 mb-4">
         Starting Word:{' '}
         <span className="font-bold tracking-wide">
-          {startingWord.charAt(0).toUpperCase() + startingWord.slice(1)}
+          {capitalize(startingWord)}
         </span>
       </h2>
 
@@ -85,7 +86,7 @@ export default function ClientPuzzlePage({
           <h2 className="text-sm font-medium mb-1">✅ Found:</h2>
           <ul className="list-disc list-inside">
             {correct.map((w) => (
-              <li key={w}>{w.charAt(0).toUpperCase() + w.slice(1)}</li>
+              <li key={w}>{capitalize(w)}</li>
             ))}
           </ul>
 

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { fetchData } from '@/lib/fetchData'
 import { formatDate } from '@/lib/formatDate'
+import { capitalize } from '@/lib/capitalize'
 
 type Puzzle = {
   id: string
@@ -40,9 +41,7 @@ export default async function OneOffListPage() {
                   {formatDate(puzzle.publishedDate)}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Word:{' '}
-                  {puzzle.startingWord.charAt(0).toUpperCase() +
-                    puzzle.startingWord.slice(1)}
+                  Word: {capitalize(puzzle.startingWord)}
                 </p>
               </Link>
             </li>
