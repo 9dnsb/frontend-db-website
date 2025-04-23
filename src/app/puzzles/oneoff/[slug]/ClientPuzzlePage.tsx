@@ -16,6 +16,7 @@ export default function ClientPuzzlePage({
   const [guess, setGuess] = useState('')
   const [correct, setCorrect] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [revealAll, setRevealAll] = useState(false)
 
   function checkGuess() {
     if (validAnswers.includes(guess.toLowerCase())) {
@@ -89,6 +90,31 @@ export default function ClientPuzzlePage({
               <li key={w}>{capitalize(w)}</li>
             ))}
           </ul>
+          {revealAll && (
+            <div className="mt-6">
+              <h2 className="text-sm font-medium mb-1">
+                📝 All Possible Answers:
+              </h2>
+              <ul className="list-disc list-inside">
+                {validAnswers
+                  .filter((w) => !correct.includes(w))
+                  .map((w) => (
+                    <li key={w} className="text-muted-foreground italic">
+                      {capitalize(w)}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          )}
+
+          {!revealAll && correct.length < validAnswers.length && (
+            <button
+              onClick={() => setRevealAll(true)}
+              className="mt-4 text-sm text-blue-600 hover:underline"
+            >
+              🔍 Click to show all answers
+            </button>
+          )}
 
           {correct.length === validAnswers.length && (
             <p className="mt-6 text-center text-green-600 font-bold text-lg">
