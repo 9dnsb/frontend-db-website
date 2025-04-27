@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@payloadcms/richtext-lexical": "^3.35.1",
-    "framer-motion": "^12.7.4",
+    "framer-motion": "^thtas gr",
     "next": "15.3.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

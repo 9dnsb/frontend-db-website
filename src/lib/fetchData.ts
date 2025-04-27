@@ -4,7 +4,7 @@ export async function fetchData<T>(url: string): Promise<T> {
     headers: {
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
     },
-    next: { revalidate: 60 },
+    cache: 'no-store', // ✅ instead of next: { revalidate: 60 }
   })
 
   if (!res.ok) {
