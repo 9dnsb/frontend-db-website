@@ -14,6 +14,12 @@ const games = [
     name: 'One Off',
     description: 'Change, add, or remove one letter to find all related words.',
   },
+  {
+    slug: 'mathgridle',
+    name: 'Math Gridle',
+    description:
+      'Fill the 3×3 grid using numbers 1–9 to match all row and column sums.',
+  },
 ]
 
 export default function PuzzleHubPage() {

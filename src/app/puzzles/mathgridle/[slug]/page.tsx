@@ -1,13 +1,14 @@
 import { createPuzzlePage } from '@/app/puzzles/_utils/createPuzzlePage'
 import ClientPuzzlePage from './ClientPuzzlePage'
-import { loadOneOffPuzzle } from './loader'
+import { loadMathGridlePuzzle } from './loader'
 
 export default createPuzzlePage(
-  loadOneOffPuzzle,
+  loadMathGridlePuzzle,
   (puzzle) => ({
     date: puzzle.publishedDate,
-    startingWord: puzzle.startingWord,
-    validAnswers: puzzle.validAnswers.map((a) => a.word),
+    rowTargets: puzzle.rowTargets,
+    colTargets: puzzle.colTargets,
+    grid: puzzle.grid,
   }),
   ClientPuzzlePage
 )

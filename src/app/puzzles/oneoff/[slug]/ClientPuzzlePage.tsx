@@ -56,19 +56,23 @@ export default function ClientPuzzlePage({
         </span>
       </h2>
 
-      <div className="flex flex-wrap gap-4 items-center mt-4">
+      <div className="flex flex-wrap gap-6 items-center mt-6">
         <div className="flex flex-1 gap-2">
           <input
             type="text"
+            inputMode="text"
+            autoComplete="off"
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
             placeholder="Enter a one-off word"
             className="flex-1 px-3 py-2 border rounded"
+            spellCheck="false"
           />
+
           <div className="shrink-0">
             <button
               onClick={checkGuess}
-              className="px-4 py-2 rounded bg-blue-600 text-white font-medium"
+              className="px-5 py-2 rounded bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition"
             >
               Submit
             </button>
