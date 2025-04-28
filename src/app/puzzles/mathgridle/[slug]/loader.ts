@@ -37,8 +37,8 @@ export async function loadMathGridlePuzzle(
         [3, 5, 7],
         [4, 9, 2],
       ],
-      rowTargets: [15, 15, 15],
-      colTargets: [15, 15, 15],
+      rowTargets: [24, 15, 6],
+      colTargets: [17, 16, 12],
     }
   }
 
