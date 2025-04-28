@@ -137,10 +137,9 @@ export default function ClientPuzzlePage({
             {row.map((value, c) => (
               <input
                 key={`cell-${r}-${c}`}
-                type="number"
-                inputMode="numeric"
-                min="1"
-                max="9"
+                type="text" // ✅ text not number
+                inputMode="numeric" // ✅ still numeric keyboard
+                pattern="[1-9]*" // ✅ optional: hint to browsers to allow only 1-9
                 value={value === 0 ? '' : value}
                 onChange={(e) => handleChange(r, c, e.target.value)}
                 className="w-16 h-16 text-center border border-gray-300 rounded text-2xl font-bold"
