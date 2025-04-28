@@ -23,6 +23,15 @@ export default function ClientPuzzlePage({
   const [showRules, setShowRules] = useState(false)
 
   function handleChange(row: number, col: number, value: string) {
+    if (value === '') {
+      setPlayerGrid((prev) => {
+        const newGrid = prev.map((inner) => [...inner])
+        newGrid[row][col] = 0 // treat empty as 0
+        return newGrid
+      })
+      return
+    }
+
     const num = parseInt(value, 10)
     if (!Number.isInteger(num) || num < 1 || num > 9) return
 
