@@ -1,14 +1,19 @@
 import type { Metadata } from 'next'
 
-export function createPuzzleMetadataLoader<T>(
+export function createDynamicPuzzleMetadataLoader<T>(
   loadPuzzleFn: (slug: string) => Promise<T | null>,
-  getMetadataText: (puzzle: T) => {
+  getMetadataFields: (puzzle: T) => {
     title: string
     description: string
     path: string
   }
 ) {
-  return async function generateMetadata(slug: string): Promise<Metadata> {
+  return async function generateMetadata({
+    params,
+  }: {
+    params: Promise<{ slug: string }>
+  }): Promise<Metadata> {
+    const { slug } = await params
     const puzzle = await loadPuzzleFn(slug)
 
     if (!puzzle) {
@@ -20,7 +25,7 @@ export function createPuzzleMetadataLoader<T>(
           description: 'The requested puzzle could not be found.',
           type: 'website',
           siteName: 'David Blatt',
-          url: `https://davidblatt.ca/`, // fallback home
+          url: `https://davidblatt.ca/`,
           locale: 'en_CA',
         },
         twitter: {
@@ -31,7 +36,7 @@ export function createPuzzleMetadataLoader<T>(
       }
     }
 
-    const { title, description, path } = getMetadataText(puzzle)
+    const { title, description, path } = getMetadataFields(puzzle)
 
     return {
       title,
