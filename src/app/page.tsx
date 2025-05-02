@@ -39,7 +39,10 @@ export default async function HomePage() {
       {/* Recent Posts */}
       {posts.length > 0 && (
         <section>
-          <h2 className="text-2xl font-semibold mb-4">Recent Posts</h2>
+          <h2 className="text-xl font-bold mb-6 relative after:block after:w-10 after:h-0.5 after:bg-blue-500 after:mt-2">
+            Recent Posts
+          </h2>
+
           <ul className="space-y-6">
             {posts.map((post) => (
               <li key={post.id}>

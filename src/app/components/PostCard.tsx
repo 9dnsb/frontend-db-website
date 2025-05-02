@@ -19,7 +19,7 @@ export function PostCard({
 }: PostCardProps) {
   return (
     <Link href={`/blog/${slug}`} className="block group">
-      <article className="bg-[var(--card-background)] p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <article className="bg-[var(--card-background)] p-4 rounded-lg shadow-sm hover:shadow-md border border-white/5 hover:border-white/10 transition-colors">
         <h3 className="text-lg font-medium group-hover:underline">{title}</h3>
         <p className="text-sm text-muted-foreground mt-1">
           {formatDate(publishedDate)}
