@@ -2,7 +2,7 @@
 
 import { capitalize } from '@/lib/capitalize'
 import { formatDate } from '@/lib/formatDate'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 export default function ClientPuzzlePage({
   date,
@@ -15,17 +15,42 @@ export default function ClientPuzzlePage({
 }) {
   const [guess, setGuess] = useState('')
   const [correct, setCorrect] = useState<string[]>([])
-  const [error, setError] = useState<string | null>(null)
   const [revealAll, setRevealAll] = useState(false)
 
+  const [message, setMessage] = useState<{
+    type: 'error' | 'success'
+    text: string
+  } | null>(null)
+  const [showMessage, setShowMessage] = useState(false)
+
+  const inputRef = useRef<HTMLInputElement>(null)
+  const focusInput = () => inputRef.current?.focus()
+
+  function showTempMessage(
+    type: 'error' | 'success',
+    text: string,
+    duration = 2500
+  ) {
+    setMessage({ type, text })
+    setShowMessage(true)
+    setTimeout(() => setShowMessage(false), duration - 500)
+    setTimeout(() => setMessage(null), duration)
+  }
+
   function checkGuess() {
-    if (validAnswers.includes(guess.toLowerCase())) {
-      setCorrect((prev) => [...new Set([...prev, guess.toLowerCase()])])
+    const normalizedGuess = guess.trim().toLowerCase()
+
+    if (correct.includes(normalizedGuess)) {
+      showTempMessage('error', '⚠️ Already guessed.')
+    } else if (validAnswers.includes(normalizedGuess)) {
+      setCorrect((prev) => [...new Set([...prev, normalizedGuess])])
       setGuess('')
-      setError(null)
+      showTempMessage('success', '✅ Good one!')
     } else {
-      setError('❌ Not a valid one-off.')
+      showTempMessage('error', '❌ Not a valid one-off.')
     }
+
+    focusInput()
   }
 
   return (
@@ -57,26 +82,50 @@ export default function ClientPuzzlePage({
       </h2>
 
       <div className="flex flex-wrap gap-6 items-center mt-6">
-        <div className="flex flex-1 gap-2">
-          <input
-            type="text"
-            inputMode="text"
-            autoComplete="off"
-            value={guess}
-            onChange={(e) => setGuess(e.target.value)}
-            placeholder="Enter a one-off word"
-            className="flex-1 px-3 py-2 border rounded"
-            spellCheck="false"
-          />
-
-          <div className="shrink-0">
-            <button
-              onClick={checkGuess}
-              className="px-5 py-2 rounded bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition"
-            >
-              Submit
-            </button>
+        <div className="flex flex-1 flex-col gap-1">
+          <div className="flex gap-2">
+            <input
+              ref={inputRef}
+              type="text"
+              inputMode="text"
+              autoComplete="off"
+              value={guess}
+              onChange={(e) => setGuess(e.target.value)}
+              placeholder="Enter a one-off word"
+              className="flex-1 px-3 py-2 border rounded"
+              spellCheck="false"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  checkGuess()
+                }
+              }}
+              aria-label="Enter one-off word"
+            />
+            <div className="shrink-0">
+              <button
+                onClick={checkGuess}
+                className="px-5 py-2 rounded bg-blue-600 text-white font-bold text-lg hover:bg-blue-700 transition"
+              >
+                Submit
+              </button>
+            </div>
           </div>
+
+          {message && (
+            <p
+              key={message.text}
+              className={`text-sm transition-opacity duration-500 ease-in-out will-change-opacity ${
+                showMessage ? 'opacity-100' : 'opacity-0'
+              } ${
+                message.type === 'error'
+                  ? 'text-red-500 animate-shake'
+                  : 'text-green-600'
+              }`}
+            >
+              {message.text}
+            </p>
+          )}
         </div>
 
         <p className="text-sm text-muted-foreground whitespace-nowrap">
@@ -84,49 +133,66 @@ export default function ClientPuzzlePage({
         </p>
       </div>
 
-      {error && <p className="text-red-500 mt-2">{error}</p>}
-
       {correct.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-sm font-medium mb-1">✅ Found:</h2>
-          <ul className="list-disc list-inside">
-            {correct.map((w) => (
-              <li key={w}>{capitalize(w)}</li>
-            ))}
-          </ul>
-          {revealAll && (
-            <div className="mt-6">
-              <h2 className="text-sm font-medium mb-1">
-                📝 All Possible Answers:
-              </h2>
-              <ul className="list-disc list-inside">
-                {validAnswers
-                  .filter((w) => !correct.includes(w))
-                  .map((w) => (
-                    <li key={w} className="text-muted-foreground italic">
-                      {capitalize(w)}
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          )}
+        <AnswerList
+          correct={correct}
+          validAnswers={validAnswers}
+          revealAll={revealAll}
+        />
+      )}
 
-          {!revealAll && correct.length < validAnswers.length && (
-            <button
-              onClick={() => setRevealAll(true)}
-              className="mt-4 text-sm text-blue-600 hover:underline"
-            >
-              🔍 Click to show all answers
-            </button>
-          )}
+      {!revealAll && correct.length < validAnswers.length && (
+        <button
+          onClick={() => setRevealAll(true)}
+          className="mt-4 text-sm text-blue-600 hover:underline"
+        >
+          🔍 Click to show all answers
+        </button>
+      )}
 
-          {correct.length === validAnswers.length && (
-            <p className="mt-6 text-center text-green-600 font-bold text-lg">
-              🎉 Puzzle solved! You found all {validAnswers.length} words.
-            </p>
-          )}
-        </div>
+      {correct.length === validAnswers.length && (
+        <p className="mt-6 text-center text-green-600 font-bold text-lg">
+          🎉 Puzzle solved! You found all {validAnswers.length} words.
+        </p>
       )}
     </main>
+  )
+}
+
+function AnswerList({
+  correct,
+  validAnswers,
+  revealAll,
+}: {
+  correct: string[]
+  validAnswers: string[]
+  revealAll: boolean
+}) {
+  const listClass =
+    'list-disc list-inside columns-2 sm:columns-3 gap-x-6 break-inside-avoid text-sm'
+  const remaining = validAnswers.filter((w) => !correct.includes(w))
+
+  return (
+    <div className="mt-4">
+      <h2 className="text-sm font-medium mb-1">✅ Found:</h2>
+      <ul className={listClass}>
+        {correct.map((w) => (
+          <li key={w}>{capitalize(w)}</li>
+        ))}
+      </ul>
+
+      {revealAll && (
+        <div className="mt-6">
+          <h2 className="text-sm font-medium mb-1">📝 All Possible Answers:</h2>
+          <ul className={listClass}>
+            {remaining.map((w) => (
+              <li key={w} className="text-muted-foreground italic">
+                {capitalize(w)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   )
 }

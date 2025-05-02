@@ -4,12 +4,6 @@ import Link from 'next/link'
 
 const games = [
   {
-    slug: 'mixandmatch',
-    name: 'Mix & Match',
-    description:
-      'Group 16 words into 4 hidden categories. Can you find the sets?',
-  },
-  {
     slug: 'oneoff',
     name: 'One Off',
     description: 'Change, add, or remove one letter to find all related words.',
@@ -19,6 +13,12 @@ const games = [
     name: 'Math Gridle',
     description:
       'Fill the 3×3 grid using numbers 1–9 to match all row and column sums.',
+  },
+  {
+    slug: 'mixandmatch',
+    name: 'Mix & Match',
+    description:
+      'Group 16 words into 4 hidden categories. Can you find the sets?',
   },
 ]
 
