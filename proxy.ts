@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // ✅ Generate a random nonce (Base64-encoded UUID)
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
 

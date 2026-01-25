@@ -22,10 +22,15 @@ type APIResponse = {
 }
 
 export async function generateStaticParams() {
-  const data = await fetchData<APIResponse>('/api/blog-posts')
-  return data.docs.map((post) => ({
-    slug: post.slug,
-  }))
+  try {
+    const data = await fetchData<APIResponse>('/api/blog-posts')
+    return data.docs.map((post) => ({
+      slug: post.slug,
+    }))
+  } catch {
+    // Backend unavailable during build - pages will be generated on-demand
+    return []
+  }
 }
 
 export async function generateMetadata({
