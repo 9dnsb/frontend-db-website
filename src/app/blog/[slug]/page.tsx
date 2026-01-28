@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/formatDate'
 import { PageContainer } from '@/app/components/PageContainer'
 import { fetchData } from '@/lib/fetchData'
 import { generateBlogPostMetadata } from '@/lib/metadata/blogPostMetadata'
+import { PaperChat } from '@/app/components/PaperChat'
 
 type Post = {
   id: string
@@ -15,6 +16,12 @@ type Post = {
   author?: {
     name: string
   }
+  sourcePaper?: {
+    id: string
+    title: string
+    vectorStoreId: string | null
+    processingStatus: 'pending' | 'processing' | 'ready' | 'error'
+  } | null
 }
 
 type APIResponse = {
@@ -50,8 +57,9 @@ export default async function BlogPostPage({
   const { slug } = await params
 
   try {
+    // depth=1 to populate the sourcePaper relationship
     const data = await fetchData<APIResponse>(
-      `/api/blog-posts?where[slug][equals]=${slug}`
+      `/api/blog-posts?where[slug][equals]=${slug}&depth=1`
     )
 
     const post = data.docs?.[0]
@@ -62,6 +70,12 @@ export default async function BlogPostPage({
 
     const authorName = post.author?.name || 'David Blatt'
 
+    // Only pass vectorStoreId if paper is ready
+    const vectorStoreId =
+      post.sourcePaper?.processingStatus === 'ready'
+        ? post.sourcePaper.vectorStoreId
+        : null
+
     return (
       <PageContainer>
         <h1 className="text-3xl font-bold mb-2 leading-tight">{post.title}</h1>
@@ -69,6 +83,12 @@ export default async function BlogPostPage({
           {formatDate(post.publishedDate)} · by {authorName}
         </p>
         <RichContent content={post.content} />
+
+        {/* Paper Chat - only renders if vectorStoreId exists */}
+        <PaperChat
+          vectorStoreId={vectorStoreId}
+          paperTitle={post.sourcePaper?.title || post.title}
+        />
       </PageContainer>
     )
   } catch (err) {
