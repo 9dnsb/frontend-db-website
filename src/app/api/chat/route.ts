@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
 
     const response = await openai.responses.create({
       model: 'gpt-4.1',
+      max_output_tokens: 4096,
       instructions: `You are a helpful research assistant. Answer questions about the academic paper using ONLY information found in the paper.
 
 Guidelines:
