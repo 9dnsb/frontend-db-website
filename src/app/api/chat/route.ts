@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
 
     const response = await openai.responses.create({
       model: 'gpt-4.1',
-      max_output_tokens: 4096,
+      max_output_tokens: 16384,
+      truncation: 'auto',
       instructions: `You are a helpful research assistant. Answer questions about the academic paper using ONLY information found in the paper.
 
 Guidelines:
@@ -74,9 +75,21 @@ Guidelines:
 
             // Handle completion
             if (event.type === 'response.completed') {
+              const response = event.response
+              console.log('Response completed:', {
+                status: response.status,
+                incomplete_details: response.incomplete_details,
+                usage: response.usage,
+              })
+
               controller.enqueue(
                 encoder.encode(
-                  `data: ${JSON.stringify({ type: 'done', responseId: event.response.id })}\n\n`
+                  `data: ${JSON.stringify({
+                    type: 'done',
+                    responseId: response.id,
+                    status: response.status,
+                    incomplete_details: response.incomplete_details,
+                  })}\n\n`
                 )
               )
             }
