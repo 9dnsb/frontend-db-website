@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { marked } from 'marked'
 
 type Message = {
   role: 'user' | 'assistant'
@@ -231,28 +232,37 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] p-3 rounded-lg text-sm whitespace-pre-wrap ${
+                  className={`max-w-[85%] p-3 rounded-lg text-sm ${
                     msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-sm'
-                      : 'bg-[var(--foreground)]/10 rounded-bl-sm'
+                      ? 'bg-blue-600 text-white rounded-br-sm whitespace-pre-wrap'
+                      : 'bg-[var(--foreground)]/10 rounded-bl-sm prose prose-sm dark:prose-invert max-w-none'
                   }`}
                 >
-                  {msg.content ||
-                    (isLoading && i === messages.length - 1 ? (
-                      <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 bg-current rounded-full animate-bounce" />
-                        <span
-                          className="w-2 h-2 bg-current rounded-full animate-bounce"
-                          style={{ animationDelay: '0.1s' }}
-                        />
-                        <span
-                          className="w-2 h-2 bg-current rounded-full animate-bounce"
-                          style={{ animationDelay: '0.2s' }}
-                        />
-                      </span>
+                  {msg.content ? (
+                    msg.role === 'assistant' ? (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: marked.parse(msg.content, { async: false }) as string,
+                        }}
+                      />
                     ) : (
-                      ''
-                    ))}
+                      msg.content
+                    )
+                  ) : isLoading && i === messages.length - 1 ? (
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 bg-current rounded-full animate-bounce" />
+                      <span
+                        className="w-2 h-2 bg-current rounded-full animate-bounce"
+                        style={{ animationDelay: '0.1s' }}
+                      />
+                      <span
+                        className="w-2 h-2 bg-current rounded-full animate-bounce"
+                        style={{ animationDelay: '0.2s' }}
+                      />
+                    </span>
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
             ))}
