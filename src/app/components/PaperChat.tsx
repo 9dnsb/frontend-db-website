@@ -162,8 +162,7 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
           style={{
             position: 'fixed',
             bottom: '24px',
-            left: '50%',
-            transform: 'translateX(-50%)',
+            right: '24px',
             width: 'calc(100% - 32px)',
             maxWidth: '380px',
             height: '500px',
