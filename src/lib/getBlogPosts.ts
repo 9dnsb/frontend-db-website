@@ -12,7 +12,7 @@ export type Post = {
 export async function getBlogPosts(): Promise<Post[]> {
   try {
     const data = await fetchData<{ docs: Post[] }>(
-      `/api/blog-posts?sort=-publishedDate&where[publishedDate][less_than_equal]=${new Date().toISOString()}`
+      `/api/blog-posts?sort=-publishedDate&where[publishedDate][less_than_equal]=${new Date().toISOString()}&where[status][equals]=published`
     )
     return data.docs
   } catch (err) {

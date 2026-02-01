@@ -13,6 +13,7 @@ type Post = {
   slug: string
   content: SerializedEditorState
   publishedDate: string
+  status?: 'draft' | 'published'
   author?: {
     name: string
   }
@@ -65,6 +66,12 @@ export default async function BlogPostPage({
     const post = data.docs?.[0]
     if (!post) {
       console.warn(`⚠️ Blog post not found for slug=${slug}`)
+      return notFound()
+    }
+
+    // Return 404 for draft posts (not yet published)
+    if (post.status === 'draft') {
+      console.warn(`⚠️ Blog post is draft, returning 404 for slug=${slug}`)
       return notFound()
     }
 

@@ -26,9 +26,9 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // Focus input when chat opens
+  // Focus input when chat opens (desktop only to avoid mobile keyboard popup)
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && window.matchMedia('(min-width: 640px)').matches) {
       inputRef.current?.focus()
     }
   }, [isOpen])
@@ -123,14 +123,19 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
   if (!vectorStoreId) return null
 
   return (
-    <div className="fixed bottom-6 right-4 sm:bottom-8 sm:right-8 z-50">
-      {/* Toggle Button - Pill style with text */}
+    <>
+      {/* Toggle Button - Fixed at bottom right */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white
-                     rounded-full shadow-lg transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2 px-6 py-4
+                     bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg
+                     transition-all hover:scale-105 active:scale-95"
           aria-label="Ask AI about the paper"
+          style={{
+            marginBottom: 'env(safe-area-inset-bottom)',
+            marginRight: 'env(safe-area-inset-right)',
+          }}
         >
           <svg
             className="w-5 h-5"
@@ -142,21 +147,29 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
             />
           </svg>
           <span className="text-sm font-medium whitespace-nowrap">Ask AI</span>
         </button>
       )}
 
-      {/* Chat Panel */}
+      {/* Chat Panel - Floating card */}
       {isOpen && (
         <div
-          className="fixed sm:absolute bottom-0 right-0 left-0 sm:left-auto sm:bottom-16
-                      w-full sm:w-[380px] h-[70vh] sm:h-[520px] max-h-[600px]
-                      bg-[var(--background)] border border-[var(--foreground)]/10
-                      rounded-t-xl sm:rounded-xl shadow-2xl flex flex-col overflow-hidden
-                      animate-in slide-in-from-bottom-2 duration-200"
+          className="bg-[var(--background)] border border-[var(--foreground)]/10
+                     rounded-xl shadow-2xl flex flex-col overflow-hidden"
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'calc(100% - 32px)',
+            maxWidth: '380px',
+            height: '500px',
+            maxHeight: '80vh',
+            zIndex: 9999,
+          }}
         >
           {/* Header */}
           <div className="p-4 border-b border-[var(--foreground)]/10 bg-[var(--foreground)]/5">
@@ -281,7 +294,7 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask a question..."
-                className="flex-1 px-3 py-2 text-sm border border-[var(--foreground)]/20
+                className="flex-1 px-3 py-2 text-base border border-[var(--foreground)]/20
                            rounded-lg bg-transparent focus:outline-none focus:border-blue-500
                            focus:ring-1 focus:ring-blue-500/20 transition-colors"
                 disabled={isLoading}
@@ -318,6 +331,6 @@ export function PaperChat({ vectorStoreId, paperTitle }: PaperChatProps) {
           </form>
         </div>
       )}
-    </div>
+    </>
   )
 }
