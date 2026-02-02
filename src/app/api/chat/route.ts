@@ -39,17 +39,35 @@ export async function POST(request: NextRequest) {
     ]
 
     const response = await openai.responses.create({
-      model: 'gpt-4.1',
+      model: 'gpt-5.2',
       max_output_tokens: 16384,
       truncation: 'auto',
+      // GPT-5.2 settings: reasoning effort 'none' for fast responses (matching gpt-4.1 behavior)
+      reasoning: {
+        effort: 'none',
+      },
+      // Medium verbosity for balanced, informative responses
+      text: {
+        verbosity: 'medium',
+      },
       instructions: `You are a helpful research assistant. Answer questions about the academic paper using ONLY information found in the paper.
 
-Guidelines:
-- If the answer isn't in the paper, clearly state that you couldn't find that information in the paper.
-- When citing information, reference the specific section or page when possible.
-- Be concise but thorough.
+<uncertainty_and_ambiguity>
+- If the answer isn't in the paper, clearly state that you couldn't find that information.
+- Never fabricate quotes, statistics, or details not present in the source material.
+- When uncertain, use language like "Based on the provided context..." rather than absolute claims.
+</uncertainty_and_ambiguity>
+
+<output_verbosity_spec>
+- Be concise but thorough - aim for focused, well-structured answers.
 - Use markdown formatting for clarity when appropriate.
-- If asked about topics outside the paper's scope, politely redirect to what the paper does cover.`,
+- When citing information, reference the specific section or page when possible.
+- Avoid unnecessary preamble or repetition of the question.
+</output_verbosity_spec>
+
+Guidelines:
+- If asked about topics outside the paper's scope, politely redirect to what the paper does cover.
+- Provide concrete examples and specific findings from the paper when available.`,
       input,
       tools: [
         {
