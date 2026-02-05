@@ -18,11 +18,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://davidblatt.ca'),
   title: "David Blatt's Website",
   description: 'Learn how AI might fit into your own life',
-  icons: {
-    icon: '/logo.svg',
-    shortcut: '/logo.svg',
-    apple: '/logo.svg',
-  },
   openGraph: {
     title: "David Blatt's Website",
     description: 'Learn how AI might fit into your own life',

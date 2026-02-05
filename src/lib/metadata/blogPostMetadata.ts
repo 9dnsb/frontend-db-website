@@ -41,7 +41,7 @@ export async function generateBlogPostMetadata(
         title: post.title,
         description: `Written by ${authorName} on ${formatDate(post.publishedDate)}.`,
         type: 'article',
-        url: `https://www.davidblatt.ca/blog/${post.slug}`,
+        url: `https://davidblatt.ca/blog/${post.slug}`,
         siteName: 'David Blatt',
       },
       twitter: {
