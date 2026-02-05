@@ -1,6 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" fill="none">
-  <!-- D letter -->
-  <path d="M10 10 L10 90 L35 90 C58 90 72 72 72 50 C72 28 58 10 35 10 Z M22 22 L33 22 C48 22 58 34 58 50 C58 66 48 78 33 78 L22 78 Z" fill="#1a1a2e"/>
-  <!-- B letter - interlocked with D -->
-  <path d="M48 10 L48 90 L78 90 C94 90 106 80 106 67 C106 56 98 48 88 46 C96 43 102 35 102 25 C102 14 92 10 78 10 Z M60 22 L75 22 C84 22 90 26 90 34 C90 42 84 46 75 46 L60 46 Z M60 56 L77 56 C88 56 94 62 94 70 C94 78 88 78 77 78 L60 78 Z" fill="#4a4e69"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Dark background circle -->
+  <circle cx="60" cy="60" r="58" fill="#1a1a2e"/>
+  <!-- Letters group, centered in circle -->
+  <g transform="translate(7,10)">
+    <!-- D letter -->
+    <path d="M10 10 L10 90 L35 90 C58 90 72 72 72 50 C72 28 58 10 35 10 Z M22 22 L33 22 C48 22 58 34 58 50 C58 66 48 78 33 78 L22 78 Z" fill="#ffffff"/>
+    <!-- B letter - interlocked with D -->
+    <path d="M48 10 L48 90 L78 90 C94 90 106 80 106 67 C106 56 98 48 88 46 C96 43 102 35 102 25 C102 14 92 10 78 10 Z M60 22 L75 22 C84 22 90 26 90 34 C90 42 84 46 75 46 L60 46 Z M60 56 L77 56 C88 56 94 62 94 70 C94 78 88 78 77 78 L60 78 Z" fill="#e0e0e0"/>
+  </g>
 </svg>
