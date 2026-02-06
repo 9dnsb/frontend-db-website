@@ -9,10 +9,12 @@ export default async function HomePage() {
     <DelayedContent minDelay={1400}>
       <div className="space-y-16">
         <section>
-          <h1 className="text-4xl font-bold mb-4">Hey, I&apos;m David Blatt.</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            Hey, I&apos;m David Blatt.
+          </h1>
           <p className="text-lg text-[var(--foreground)]/80">
-            I write articles about how I&apos;m using ChatGPT in my everyday
-            life — to solve problems, learn new things, and build projects.
+            I write articles about how I&apos;m using AI in my everyday life —
+            to solve problems, learn new things, and build projects.
           </p>
         </section>
 
