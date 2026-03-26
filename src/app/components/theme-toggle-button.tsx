@@ -1,31 +1,36 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
+
+function getThemeSnapshot() {
+  return document.documentElement.classList.contains('dark')
+}
+
+function subscribeToTheme(callback: () => void) {
+  const observer = new MutationObserver(callback)
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  })
+  return () => observer.disconnect()
+}
+
+function getServerSnapshot() {
+  return false
+}
 
 export function ThemeToggleButton() {
-  const [isDark, setIsDark] = useState(false)
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
-    const stored = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia(
-      '(prefers-color-scheme: dark)'
-    ).matches
-    const shouldUseDark = stored ? stored === 'dark' : prefersDark
-
-    document.documentElement.classList.toggle('dark', shouldUseDark)
-    setIsDark(shouldUseDark)
-    setHydrated(true)
-  }, [])
+  const isDark = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    getServerSnapshot
+  )
 
   const toggleTheme = () => {
     const next = !isDark
     document.documentElement.classList.toggle('dark', next)
     localStorage.setItem('theme', next ? 'dark' : 'light')
-    setIsDark(next)
   }
-
-  if (!hydrated) return null
 
   return (
     <div className="flex items-center gap-2 text-sm">
